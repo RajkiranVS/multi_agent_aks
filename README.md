@@ -1,5 +1,3 @@
----
-
 # 🚀 Multi-Agent AI System on Azure AKS
 
 ![CI](https://img.shields.io/github/actions/workflow/status/your-org/multi-agent-aks-system/ci.yml?branch=main\&label=CI\&style=flat-square)
