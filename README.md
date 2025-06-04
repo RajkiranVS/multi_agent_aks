@@ -1,10 +1,3 @@
-Awesome! Here’s an enhanced and **badged-up, CI/CD-ready** `README.md` for your `multi-agent-aks-system` GitHub project, now with:
-
-* 🏷️ GitHub badges
-* 🛠️ GitHub Actions CI/CD placeholder
-* 📈 Azure Monitor (Application Insights) support
-* ✅ Styled for professional visibility
-
 ---
 
 # 🚀 Multi-Agent AI System on Azure AKS
