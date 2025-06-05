@@ -1,0 +1,5 @@
+{
+  "connectionString": "InstrumentationKey=<YOUR_INSTRUMENTATION_KEY>",
+  "roleName": "multi-agent-system",
+  "roleInstance": "aks-node"
+}
