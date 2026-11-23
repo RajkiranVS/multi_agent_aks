@@ -1,12 +1,10 @@
 # 🚀 Multi-Agent AI System on Azure AKS
 
-![CI](https://img.shields.io/github/actions/workflow/status/your-org/multi-agent-aks-system/ci.yml?branch=main\&label=CI\&style=flat-square)
-![License](https://img.shields.io/github/license/your-org/multi-agent-aks-system?style=flat-square)
 ![Deploy to AKS](https://img.shields.io/badge/Deploy-Azure%20AKS-blue?logo=microsoft-azure\&style=flat-square)
 ![Built with FastAPI](https://img.shields.io/badge/Built%20With-FastAPI-green?logo=fastapi\&style=flat-square)
 
 > **Cloud-Native • Agentic • Modular**
-> A scalable, production-ready Multi-Agent AI System deployed on **Azure AKS** with real-time orchestration, CI/CD, and observability.
+
 
 ---
 
