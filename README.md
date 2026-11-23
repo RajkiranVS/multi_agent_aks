@@ -3,12 +3,9 @@
 ![Deploy to AKS](https://img.shields.io/badge/Deploy-Azure%20AKS-blue?logo=microsoft-azure\&style=flat-square)
 ![Built with FastAPI](https://img.shields.io/badge/Built%20With-FastAPI-green?logo=fastapi\&style=flat-square)
 
+**Status: early prototype (June 2025). Agents and orchestrator are scaffolded; pipeline wiring and deployment are in progress.**
+
 > **Cloud-Native • Agentic • Modular**
-
-
----
-
-![Architecture Diagram](./docs/architecture.png)
 
 ---
 
@@ -18,10 +15,10 @@
 | ---------------- | ------------------------------------ | ---------------------------------------------------- |
 | **Agents**       | FastAPI Microservices                | Modular AI behavior: Planning, Research, Summarizing |
 | **Orchestrator** | FastAPI API Gateway                  | Central coordinator for agent workflows              |
-| **Deployment**   | Docker, Helm, Azure AKS              | Scalable, cloud-native deployment                    |
+| **Deployment**   | Docker, Azure AKS (Helm planned)     | Scalable, cloud-native deployment                    |
 | **Routing**      | NGINX Ingress Controller             | Routes external requests to internal services        |
-| **CI/CD**        | GitHub Actions                       | Auto build/test/deploy to AKS                        |
-| **Monitoring**   | Azure Monitor / Application Insights | Real-time metrics and logs                           |
+| **CI/CD**        | GitHub Actions                       | Build pipeline (deploy planned)                      |
+| **Monitoring**   | Azure Monitor / Application Insights | Traces, metrics and logs (optional)                  |
 
 ---
 
@@ -35,38 +32,14 @@ multi-agent-aks-system/
 │   ├── planner_agent/          # Task decomposition
 │   ├── researcher_agent/       # Info gathering (e.g., web, vector DB)
 │   └── summarizer_agent/       # Final output generation
-│
-├── helm/                       # Helm charts for AKS deployment
 ├── .github/workflows/ci.yml    # CI/CD GitHub Actions pipeline
 ├── k8s-ingress.yaml            # Ingress rules
-├── monitor/insights_config.json # App Insights telemetry config
 └── README.md
 ```
 
 ---
 
 ## 🚀 Quick Start
-
-### 🔬 Local Development
-
-```bash
-# Build agents
-docker build -t planner-agent ./agents/planner_agent
-docker build -t orchestrator ./orchestrator
-
-# Run locally
-docker-compose up
-```
-
-### ☁️ Deploy to Azure AKS
-
-```bash
-# Install via Helm
-helm install multi-agent ./helm
-
-# Apply ingress
-kubectl apply -f k8s-ingress.yaml
-```
 
 ☁️ Need AKS setup help? Follow [Azure AKS Quickstart](https://learn.microsoft.com/en-us/azure/aks/)
 
@@ -76,10 +49,9 @@ kubectl apply -f k8s-ingress.yaml
 
 `.github/workflows/ci.yml` handles:
 
-* ✅ Lint & test each agent
-* 🐳 Build Docker images
-* ⬆️ Push to Azure Container Registry (ACR)
-* 🚀 Helm upgrade on AKS via `kubectl`
+* ✅ Lint the orchestrator
+* 🐳 Build Docker images (orchestrator, planner)
+* ⏳ Planned: push to ACR, Helm deploy to AKS
 
 > **Coming soon:** Secrets integration via GitHub & Azure Key Vault
 
@@ -89,12 +61,16 @@ kubectl apply -f k8s-ingress.yaml
 
 ### 🎯 Application Insights (Optional)
 
-Enable **logging and telemetry** for each agent via `monitor/insights_config.json`.
+Enable logging and telemetry for each agent by setting the APPLICATIONINSIGHTS_CONNECTION_STRING environment variable (from your Application Insights resource) and initialising the Microsoft OpenTelemetry Distro:
 
-```bash
+```python
 # Add this to each FastAPI service
-from opencensus.ext.azure.trace_exporter import AzureExporter
-from opencensus.trace.samplers import ProbabilitySampler
+from microsoft.opentelemetry import use_microsoft_opentelemetry
+# Initialize the Microsoft OpenTelemetry Distro with Azure Monitor export.
+use_microsoft_opentelemetry(
+    enable_azure_monitor=True,
+    azure_monitor_enable_live_metrics=False,  # To disable live metrics
+)
 ```
 
 Azure Monitor collects:
@@ -109,9 +85,7 @@ Azure Monitor collects:
 ## 📡 API Usage Example
 
 ```bash
-curl -X POST http://<external-ip>/run_pipeline \
-     -H "Content-Type: application/json" \
-     -d '{"task": "Write a summary on multi-agent systems"}'
+curl -X POST "http://<external-ip>/run_pipeline?task=Write%20a%20summary%20on%20multi-agent%20systems"
 ```
 
 ---
@@ -136,6 +110,6 @@ Fork this repo, raise an issue, or drop a ⭐️ if you find it useful.
 
 ## 🛡 License
 
-MIT License © 2025 [Rajkiran Veldur](https://github.com/rajkiranveldur)
+MIT License © 2025 [Rajkiran Veldur](https://github.com/RajkiranVS)
 
 ---
