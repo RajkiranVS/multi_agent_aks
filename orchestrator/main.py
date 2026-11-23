@@ -1,17 +1,36 @@
+import os
 from fastapi import FastAPI
 import uvicorn
-from opencensus.ext.azure.trace_exporter import AzureExporter
-from opencensus.trace.samplers import ProbabilitySampler
-from opencensus.trace.tracer import Tracer
+from microsoft.opentelemetry import use_microsoft_opentelemetry
+from pydantic import BaseModel
+
+
+class PipelineRequest(BaseModel):
+    task: str
+
+
+applications_insights_enabled = os.getenv(
+    "APPLICATIONINSIGHTS_CONNECTION_STRING")
+
+if applications_insights_enabled:
+    # Initialize the Microsoft OpenTelemetry Distro with Azure Monitor export.
+    use_microsoft_opentelemetry(
+        enable_azure_monitor=True,
+        azure_monitor_enable_live_metrics=False,  # To disable live metrics
+    )
 
 app = FastAPI()
-exporter = AzureExporter(connection_string="InstrumentationKey=<YOUR_INSTRUMENTATION_KEY>")
-tracer = Tracer(exporter=exporter, sampler=ProbabilitySampler(1.0))
+
+
+@app.get("/health")
+def get_health_status():
+    return {"status": "Healthy and running"}
+
 
 @app.post("/run_pipeline")
-def run_pipeline(task: str):
-    with tracer.span(name="run_pipeline"):
-        return {"status": "Pipeline executed", "task": task}
+def run_pipeline(req: PipelineRequest):
+    return {"status": "Pipeline executed", "task": req.task}
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
